@@ -1,0 +1,26 @@
+FROM debian:oldstable
+
+RUN apt-get update && \
+    apt-get install -y \
+    php-fpm \
+    php-mysql \
+    php-gd \
+    php-xml \
+    php-mbstring \
+    wget \
+    curl && \
+    apt-get clean
+
+RUN mkdir -p /var/run/php/ /var/www/html
+
+# Download and install WordPress
+RUN wget https://wordpress.org/latest.tar.gz -O /tmp/wordpress.tar.gz && \
+    tar -xzvf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1 && \
+    rm /tmp/wordpress.tar.gz
+
+# Copy PHP configuration
+COPY ./www.conf /etc/php/7.4/fpm/pool.d/www.conf
+
+EXPOSE 9000
+
+CMD ["php-fpm7.4", "-F"]

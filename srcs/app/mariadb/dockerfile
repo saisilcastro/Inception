@@ -1,0 +1,21 @@
+FROM debian:oldstable
+
+# Install MariaDB
+RUN apt-get update && \
+    apt-get install -y mariadb-server && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy configuration files if needed
+COPY ./my.cnf /etc/mysql/my.cnf
+
+# Expose MariaDB port
+EXPOSE 3306
+
+# Set environment variables
+ENV MYSQL_DATABASE=${MYSQL_DATABASE}
+ENV MYSQL_USER=${MYSQL_USER}
+ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+# Entry point for MariaDB
+CMD ["mysqld_safe"]
